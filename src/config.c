@@ -25,7 +25,7 @@ static bool check_dir_exists(const char *path)
 	}
 	return false;
 }
-const char *get_config_path(void)
+char *get_config_path(void)
 {
 	const char *pkg_name = "/rss_subscriber";
 	const char *config_path;
@@ -48,7 +48,7 @@ const char *get_config_path(void)
 	}
 	return 0;
 }
-const char *get_data_path(void)
+char *get_data_path(void)
 {
 	const char *pkg_name = "/rss_subscriber";
 	const char *config_path;
