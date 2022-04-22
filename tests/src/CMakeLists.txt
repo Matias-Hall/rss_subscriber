@@ -9,5 +9,8 @@ set(CMAKE_C_FLAGS_DEBUG_INIT "-g")
 add_executable(test test.c  ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(test
 	PRIVATE ${INCLUDE_DIR}
-	PRIVATE ${EXT_INCLUDE_DIR})
-target_link_libraries(test PRIVATE curl)
+	PRIVATE ${EXT_INCLUDE_DIR}
+	PRIVATE /usr/include/libxml2)
+target_link_libraries(test
+	PRIVATE curl
+	PRIVATE xml2)

@@ -1,14 +1,18 @@
+#include "url_list.h"
 #include <argp.h>
 #include <stdio.h>
-#include "url_list.h"
 
 static const char args_doc[] = "rss_subscriber args_doc";
 static const char doc[] = "rss_subscriber doc";
 static struct argp_option opts[] = {
-	{"subscribe", 's', "url", 0, "Adds a url to the list of xml sources to download from."},
-	{"unsubscribe", 'u', "url", 0, "Removes a url to the list of xml sources to download from."},
-	{"get-subs", 'g', 0, 0, "Gets the list of urls of xml sources to download from."},
-	{ 0 }};
+	{ "subscribe", 's', "url", 0,
+	  "Adds a url to the list of xml sources to download from.", 0 },
+	{ "unsubscribe", 'u', "url", 0,
+	  "Removes a url to the list of xml sources to download from.", 0 },
+	{ "get-subs", 'g', 0, 0,
+	  "Gets the list of urls of xml sources to download from.", 0 },
+	{ 0 }
+};
 
 static error_t parse_args(int key, char *arg, struct argp_state *state)
 {
@@ -17,11 +21,12 @@ static error_t parse_args(int key, char *arg, struct argp_state *state)
 		return 0;
 	}
 	FILE *f = 0;
-	//TODO: Check if arg is a valid url.
+	// TODO: Check if arg is a valid url.
 	switch (key) {
 	case 's':
 		f = get_url_file("a");
-		add_url(f, arg);
+		if (!add_url(f, arg))
+			fprintf(stdout, "%s is not a valid rss url.\n", arg);
 		break;
 	case 'u':
 		f = get_url_file("r+");
@@ -30,15 +35,15 @@ static error_t parse_args(int key, char *arg, struct argp_state *state)
 	case 'g':
 		break;
 	}
-	if (!f)
+	if (f)
 		fclose(f);
 	return 0;
 }
-static struct argp argp = {opts, parse_args, args_doc, doc, 0, 0, 0};
+static struct argp argp = { opts, parse_args, args_doc, doc, 0, 0, 0 };
 
 int main(int argc, char **argv)
 {
 	if (!argp_parse(&argp, argc, argv, 0, 0, 0))
-		printf("Successfully processsed arguments.\n"); 
+		printf("Successfully processsed arguments.\n");
 	return 0;
 }

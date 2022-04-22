@@ -2,6 +2,7 @@
 #include "feed_gather.h"
 #include "url_list.h"
 #include "minunit.h"
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdio.h>
@@ -13,14 +14,14 @@ static char *test_get_config(void)
 	printf("Running test_get_config.\n");
 	const char *path = get_config_path();
 	mu_assert("Error config path incorrect.",
-		  path && !strcmp(path,
-			  "/home/matias/.config/rss_subscriber"));
+		  path && !strcmp(path, "/home/matias/.config/rss_subscriber"));
 	return 0;
 }
 //Used to ensure file is closed even if test fails.
 static char *tfg_helper(FILE *file)
 {
-	mu_assert("Error gathering feed.", download_rss(file, "https://archlinux.org/feeds/news/"));
+	mu_assert("Error gathering feed.",
+		  download_rss(file, "https://archlinux.org/feeds/news/"));
 	return 0;
 }
 static char *test_feed_gather(void)
@@ -38,7 +39,21 @@ static char *test_get_url_file(FILE **file)
 }
 static char *test_get_next_url(FILE *file)
 {
-	mu_assert("Error getting next url.", !strcmp(get_next_url(file), "https://archlinux.org/feeds/news/"));
+	mu_assert("Error getting next url.",
+		  !strcmp(get_next_url(file),
+			  "https://archlinux.org/feeds/news/"));
+	return 0;
+}
+static char *test_validate_rss()
+{
+	mu_assert("Error validating archlinux.xml",
+		  validate_rss("/home/matias/archlinux.xml"));
+	return 0;
+}
+static char *test_validate_rss2()
+{
+	mu_assert("Validated erroneous xml at nohup.out",
+		  !validate_rss("/home/matias/nohup.out"));
 	return 0;
 }
 static char *all(void)
@@ -48,6 +63,9 @@ static char *all(void)
 	FILE *f;
 	mu_run_test(test_get_url_file(&f));
 	mu_run_test(test_get_next_url(f));
+	fclose(f);
+	mu_run_test(test_validate_rss());
+	mu_run_test(test_validate_rss2());
 	return 0;
 }
 
@@ -59,4 +77,5 @@ int main(void)
 	} else {
 		printf("All (%d) tests passed.\n", tests_run);
 	}
+	printf("errno = %d\n", errno);
 }
