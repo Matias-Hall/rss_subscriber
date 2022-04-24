@@ -1,5 +1,4 @@
 #include "url_list.h"
-#include "feed_gather.h"
 #include <argp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +21,6 @@ static error_t parse_args(int key, char *arg, struct argp_state *state)
 	// TODO: Check if arg is a valid url.
 	switch (key) {
 	case 's':
-		rss_updated(arg);
 		f = get_url_file("a");
 		if (!add_url(f, arg))
 			fprintf(stdout, "%s is not a valid rss url.\n", arg);
