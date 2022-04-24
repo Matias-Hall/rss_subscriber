@@ -1,6 +1,8 @@
 #include "url_list.h"
+#include "feed_gather.h"
 #include <argp.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 static const char args_doc[] = "rss_subscriber args_doc";
 static const char doc[] = "rss_subscriber doc";
@@ -16,14 +18,11 @@ static struct argp_option opts[] = {
 
 static error_t parse_args(int key, char *arg, struct argp_state *state)
 {
-	if (!arg) {
-		printf("arg is empty.\n");
-		return 0;
-	}
 	FILE *f = 0;
 	// TODO: Check if arg is a valid url.
 	switch (key) {
 	case 's':
+		rss_updated(arg);
 		f = get_url_file("a");
 		if (!add_url(f, arg))
 			fprintf(stdout, "%s is not a valid rss url.\n", arg);
@@ -33,6 +32,12 @@ static error_t parse_args(int key, char *arg, struct argp_state *state)
 		remove_url(f, arg);
 		break;
 	case 'g':
+		f = get_url_file("r");
+		char *url = 0;
+		while ((url = get_next_url(f))) {
+			printf("%s\n", url);
+			free(url);
+		}
 		break;
 	}
 	if (f)

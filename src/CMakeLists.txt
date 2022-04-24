@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(rss_subscriber)
 
 set(CMAKE_C_FLAGS_DEBUG_INIT "-g")
+set(CMAKE_C_FLAGS_RELEASE "-O2")
+
 if (MSVC)
 	add_compile_options(/W4)
 else()
@@ -20,3 +22,7 @@ target_include_directories(rss_subscriber
 target_link_libraries(rss_subscriber
 	PRIVATE curl
 	PRIVATE xml2)
+
+install(TARGETS rss_subscriber
+	CONFIGURATIONS Release
+	DESTINATION bin/)

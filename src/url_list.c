@@ -39,9 +39,15 @@ char *get_next_url(FILE *file)
 {
 	if (!file)
 		return 0;
+	//+1 accounts for null-terminating character.
 	int size = char_count(file) + 1;
+	//Checks for a size of 1, which means there are no characters to read.
+	if (size <= 1)
+		return 0;
 	char *url = malloc(size);
 	fgets(url, size, file);
+	//Skips newline character.
+	fseek(file, 1, SEEK_CUR);
 	return url;
 }
 bool add_url(FILE *file, const char *url)
