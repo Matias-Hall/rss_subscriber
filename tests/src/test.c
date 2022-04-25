@@ -52,8 +52,8 @@ static char *test_validate_rss()
 }
 static char *test_validate_rss2()
 {
-	mu_assert("Validated erroneous xml at nohup.out",
-		  !validate_rss("/home/matias/nohup.out"));
+	mu_assert("Validated erroneous xml at todo.txt",
+		  !validate_rss("/home/matias/todo.txt"));
 	return 0;
 }
 static char *all(void)
